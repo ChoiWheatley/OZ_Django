@@ -177,8 +177,8 @@ SUMMERNOTE_CONFIG = {
             ["color", ["color"]],
             ["para", ["ul", "ol", "paragraph"]],
             ["table", ["table"]],
-            ["insert", ["link", "picture", "video"]],
-            ["view", ["fullscreen", "codeview", "help"]],
+            ["insert", ["link", "picture"]],
+            ["view", ["fullscreen", "help"]],
         ],
         # Or, explicitly set language/locale for editor
         "lang": "ko-KR",
