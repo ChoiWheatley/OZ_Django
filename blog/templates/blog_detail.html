@@ -1,59 +1,64 @@
 {% extends 'base.html' %}
 {% block content %}
-  <div class="mt-2 d-flex justify-content-between">
-    <h1>{{ blog.title }}</h1>
+<div class="mt-2 d-flex justify-content-between">
+  <h1>{{ blog.title }}</h1>
 
-    {% if request.user == blog.author or request.user.is_superuser %}
-      <div>
-        <a class="btn btn-sm btn-warning" href="{% url 'blog:update' blog.pk %}">수정</a>
+  {% if request.user == blog.author or request.user.is_superuser %}
+  <div>
+    <a class="btn btn-sm btn-warning" href="{% url 'blog:update' blog.pk %}">수정</a>
 
-        <form id="delete_form" action="{% url 'blog:delete' blog.pk %}" method="POST" style="display: inline">
-          {% csrf_token %}
-          <button type="button" id="delete_btn" class="btn btn-sm btn-danger">삭제</button>
-        </form>
-      </div>
-    {% endif %}
-  </div>
-
-  <div style="text-align: right">
-    {{ blog.author.username }}
-  </div>
-  <hr>
-  <p>{{ blog.content | safe }}</p>
-
-  <hr>
-  {% if request.user.is_authenticated %}
-    <form method="post" action="{% url 'blog:comment_create' blog.pk %}">
+    <form id="delete_form" action="{% url 'blog:delete' blog.pk %}" method="POST" style="display: inline">
       {% csrf_token %}
-      {{ comment_form.as_p }}
-      <div class="text-end">
-        <button class="btn btn-primary">작성</button>
-      </div>
+      <button type="button" id="delete_btn" class="btn btn-sm btn-danger">삭제</button>
     </form>
-  {% endif %}
-
-  <div class="mb-2" id="comment_wrapper">
-    {% for comment in object_list %}
-      <div class="border-bottom">
-        {{ comment.content }}
-        <p class="text-end">
-          <small>{{ comment.created_at | date:'Y-m-d H:i' }} | {{ comment.author.username }}</small>
-        </p>
-      </div>
-    {% endfor %}
   </div>
+  {% endif %}
+</div>
 
-  {% include 'pagination.html' with fragment='comment_wrapper' %}
+<div style="text-align: right">
+  {{ blog.author.username }}
+</div>
+<hr>
 
-  <a class="btn btn-sm btn-info" href="{% url 'blog:list' %}">목록</a>
+{% if blog.image %}
+<img src="{{ blog.image.url }}" alt="">
+{% endif %}
+
+<p>{{ blog.content | safe }}</p>
+
+<hr>
+{% if request.user.is_authenticated %}
+<form method="post" action="{% url 'blog:comment_create' blog.pk %}">
+  {% csrf_token %}
+  {{ comment_form.as_p }}
+  <div class="text-end">
+    <button class="btn btn-primary">작성</button>
+  </div>
+</form>
+{% endif %}
+
+<div class="mb-2" id="comment_wrapper">
+  {% for comment in object_list %}
+  <div class="border-bottom">
+    {{ comment.content }}
+    <p class="text-end">
+      <small>{{ comment.created_at | date:'Y-m-d H:i' }} | {{ comment.author.username }}</small>
+    </p>
+  </div>
+  {% endfor %}
+</div>
+
+{% include 'pagination.html' with fragment='comment_wrapper' %}
+
+<a class="btn btn-sm btn-info" href="{% url 'blog:list' %}">목록</a>
 {% endblock %}
 
 {% block js %}
-  <script>
-    document.querySelector('#delete_btn').addEventListener('click', function() {
-		  if(confirm('삭제 하시겠습니까?')) {
-			  document.querySelector('#delete_form').submit();
-      }
-    })
-  </script>
+<script>
+  document.querySelector('#delete_btn').addEventListener('click', function () {
+    if (confirm('삭제 하시겠습니까?')) {
+      document.querySelector('#delete_form').submit();
+    }
+  })
+</script>
 {% endblock %}
